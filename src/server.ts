@@ -1,10 +1,10 @@
-import express from "express";
+import express, { NextFunction } from "express";
 import morgan from "morgan";
 import * as dotenv from "dotenv";
-import multer from "multer";
 import * as Sentry from "@sentry/node";
 import cors from "cors";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
+import dbConnect from "./helpers/db_connect.js";
 
 dotenv.config();
 
@@ -44,19 +44,22 @@ app.use(
 );
 
 // All controllers should live here
-app.get("/", function rootHandler(req, res) {
-  res.end("Hello world!");
+app.get("/", function rootHandler(req: express.Request, res: express.Response) {
+  res.end("Goofy ahh TypeScript!");
 });
 
 // The error handler must be registered before any other error middleware and after all controllers
 app.use(Sentry.Handlers.errorHandler());
-
+dbConnect();
 // Optional fallthrough error handler
-app.use(function onError(err, req, res, next) {
-  // The error id is attached to `res.sentry` to be returned
-  // and optionally displayed to the user for support.
-  res.statusCode = 500;
-  res.end(res.sentry + "\n");
+app.use(function onError(
+  err: Error,
+  req: express.Request,
+  res: express.Response,
+  next: NextFunction
+) {
+  res.statusCode;
+  res.end("An error occurred");
 });
 
 const port = process.env.PORT || 8080;
@@ -65,15 +68,18 @@ app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });
 
-app.get("/debug-sentry", function mainHandler(req, res) {
-  testSentry();
-  res.end("Error sent to Sentry!");
-});
+app.get(
+  "/debug-sentry",
+  function mainHandler(req: express.Request, res: express.Response) {
+    testSentry();
+    res.end("Error sent to Sentry!");
+  }
+);
 
 const testSentry = async () => {
   try {
     throw new Error("My first Sentry error!");
-  } catch (error) {
+  } catch (error: any) {
     Sentry.captureException(error);
   }
 };
