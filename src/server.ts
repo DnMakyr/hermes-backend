@@ -4,7 +4,7 @@ import * as dotenv from "dotenv";
 import * as Sentry from "@sentry/node";
 import cors from "cors";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
-import dbConnect from "./helpers/db_connect.js";
+import dbConnect from "./helpers/db_connect.ts";
 
 dotenv.config();
 
