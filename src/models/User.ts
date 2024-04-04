@@ -1,11 +1,11 @@
 import mongoose, { Model, Schema } from "mongoose";
 
-interface IProfile extends mongoose.Document {
-  fullName: string;
-  bio?: string;
-}
+// interface IProfile extends mongoose.Document {
+//   fullName: string;
+//   bio?: string;
+// }
 
-const profileSchema: Schema<IProfile> = new Schema({
+const profileSchema = new Schema({
   fullName: {
     type: String,
     required: true,
@@ -16,17 +16,17 @@ const profileSchema: Schema<IProfile> = new Schema({
   },
 });
 
-const Profile: Model<IProfile> = mongoose.model("Profile", profileSchema);
+const Profile = mongoose.model("Profile", profileSchema);
 
-interface IUser extends mongoose.Document {
-  email: string;
-  username: string;
-  password: string;
-  profile: IProfile;
-  createdAt: Date;
-}
+// interface IUser extends mongoose.Document {
+//   email: string;
+//   username: string;
+//   password: string;
+//   profile: IProfile;
+//   createdAt: Date;
+// }
 
-const userSchema: Schema<IUser> = new Schema({
+const userSchema = new Schema({
   email: {
     type: String,
     required: true,
@@ -35,9 +35,20 @@ const userSchema: Schema<IUser> = new Schema({
     type: String,
     required: true,
   },
-  password: {
-    type: String,
-    required: true,
+  authentication: {
+    password: {
+      type: String,
+      required: true,
+      select: false,
+    },
+    googleId: {
+      type: String,
+      select: false,
+    },
+    salt: {
+      type: String,
+      select: false,
+    },
   },
   profile: {
     type: Schema.Types.ObjectId,
@@ -49,6 +60,6 @@ const userSchema: Schema<IUser> = new Schema({
   },
 });
 
-const User: Model<IUser> = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 
 export { User, Profile };
